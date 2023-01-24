@@ -168,13 +168,20 @@ class InferenceModule:
         return self.getPositionDistributionHelper(gameState, pos, index, agent)
 
     def getObservationProb(
-        self, noisyDistance, pacmanPosition, ghostPosition, jailPosition
+            self, noisyDistance, pacmanPosition, ghostPosition, jailPosition
     ):
         """
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
-        "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        if ghostPosition == jailPosition:
+            if noisyDistance is None:
+                return 1.0
+            else:
+                return 0.0
+        if noisyDistance is None:
+            return 0.0
+        return busters.getObservationProbability(noisyDistance, manhattanDistance(pacmanPosition, ghostPosition))
 
     def setGhostPosition(self, gameState, ghostPosition, index):
         """
