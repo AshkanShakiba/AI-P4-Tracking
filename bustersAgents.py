@@ -61,8 +61,8 @@ class KeyboardInference(inference.InferenceModule):
         for p in self.legalPositions:
             trueDistance = util.manhattanDistance(p, pacmanPosition)
             if (
-                noisyDistance != None
-                and busters.getObservationProbability(noisyDistance, trueDistance) > 0
+                    noisyDistance != None
+                    and busters.getObservationProbability(noisyDistance, trueDistance) > 0
             ):
                 allPossible[p] = 1.0
         allPossible.normalize()
@@ -79,12 +79,12 @@ class BustersAgent:
     "An agent that tracks and displays its beliefs about ghost positions."
 
     def __init__(
-        self,
-        index=0,
-        inference="ExactInference",
-        ghostAgents=None,
-        observeEnable=True,
-        elapseTimeEnable=True,
+            self,
+            index=0,
+            inference="ExactInference",
+            ghostAgents=None,
+            observeEnable=True,
+            elapseTimeEnable=True,
     ):
         try:
             inferenceType = util.lookup(inference, globals())
@@ -170,4 +170,15 @@ class GreedyBustersAgent(BustersAgent):
             for i, beliefs in enumerate(self.ghostBeliefs)
             if livingGhosts[i + 1]
         ]
-        "*** YOUR CODE HERE ***"
+
+        ghost_positions = []
+        for position in livingGhostPositionDistributions:
+            ghost_positions.append(max(position, key=position.get))
+
+        best_action = None
+        for position in ghost_positions:
+            for action in legal:
+                if self.distancer.getDistance(pacmanPosition, position) > \
+                        self.distancer.getDistance(Actions.getSuccessor(pacmanPosition, action), position):
+                    best_action = action
+            return best_action
