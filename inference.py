@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -25,6 +25,7 @@ class DiscreteDistribution(dict):
     A DiscreteDistribution models belief distributions and weight distributions
     over a finite set of discrete keys.
     """
+
     def __getitem__(self, key):
         self.setdefault(key, 0)
         return dict.__getitem__(self, key)
@@ -106,6 +107,7 @@ class InferenceModule:
     """
     An inference module tracks a belief distribution over a ghost's location.
     """
+
     ############################################
     # Useful methods for all inference modules #
     ############################################
@@ -134,8 +136,9 @@ class InferenceModule:
         if pacmanPosition == ghostPosition:  # The ghost has been caught!
             dist[jail] = 1.0
             return dist
-        pacmanSuccessorStates = game.Actions.getLegalNeighbors(pacmanPosition, \
-                gameState.getWalls())  # Positions Pacman can move to
+        pacmanSuccessorStates = game.Actions.getLegalNeighbors(
+            pacmanPosition, gameState.getWalls()
+        )  # Positions Pacman can move to
         if ghostPosition in pacmanSuccessorStates:  # Ghost could get caught
             mult = 1.0 / float(len(pacmanSuccessorStates))
             dist[jail] = mult
@@ -164,7 +167,9 @@ class InferenceModule:
             agent = self.ghostAgent
         return self.getPositionDistributionHelper(gameState, pos, index, agent)
 
-    def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailPosition):
+    def getObservationProb(
+        self, noisyDistance, pacmanPosition, ghostPosition, jailPosition
+    ):
         """
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
@@ -212,7 +217,9 @@ class InferenceModule:
         """
         Initialize beliefs to a uniform distribution over all legal positions.
         """
-        self.legalPositions = [p for p in gameState.getWalls().asList(False) if p[1] > 1]
+        self.legalPositions = [
+            p for p in gameState.getWalls().asList(False) if p[1] > 1
+        ]
         self.allPositions = self.legalPositions + [self.getJailPosition()]
         self.initializeUniformly(gameState)
 
@@ -251,6 +258,7 @@ class ExactInference(InferenceModule):
     The exact dynamic inference module should use forward algorithm updates to
     compute the exact belief function at each time step.
     """
+
     def initializeUniformly(self, gameState):
         """
         Begin with a uniform distribution over legal ghost positions (i.e., not
@@ -301,6 +309,7 @@ class ParticleFilter(InferenceModule):
     """
     A particle filter for approximately tracking a single ghost.
     """
+
     def __init__(self, ghostAgent, numParticles=300):
         InferenceModule.__init__(self, ghostAgent)
         self.setNumParticles(numParticles)
@@ -348,7 +357,7 @@ class ParticleFilter(InferenceModule):
         Return the agent's current belief state, a distribution over ghost
         locations conditioned on all evidence and time passage. This method
         essentially converts a list of particles into a belief distribution.
-        
+
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
@@ -360,6 +369,7 @@ class JointParticleFilter(ParticleFilter):
     JointParticleFilter tracks a joint distribution over tuples of all ghost
     positions.
     """
+
     def __init__(self, numParticles=600):
         self.setNumParticles(numParticles)
 
@@ -442,6 +452,7 @@ class MarginalInference(InferenceModule):
     A wrapper around the JointInference module that returns marginal beliefs
     about ghosts.
     """
+
     def initializeUniformly(self, gameState):
         """
         Set the belief state to an initial, prior value.
